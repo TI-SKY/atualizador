@@ -14,7 +14,7 @@
 export sistema=$1
 export nversion=$2
 export TESTE_AUTO="zzzconcluido.txt"
-export fname=$(dirname $(find / -name "$sistema.exe" |grep "executaveis/$sistema/$sistema.exe"))
+export fname=$(dirname $(find / -name "$sistema*$nversao.zip"))
 
 function closeof () {
 	echo "FECHANDO PROCESSOS DE ARQUIVOS ABERTOS NO SERVIDOR"
@@ -73,8 +73,6 @@ which smbstatus >> /dev/null
 
 closeof
 
-#renwait 
-
 sleep 2
 echo && echo "renomeando $fname para $fname-"
 mv "$fname" "$fname-"
@@ -86,6 +84,9 @@ echo && echo "Renomeando $fname- para $fname"
 mv "$fname-" "$fname"
 
 closeof
+
+echo && echo "Dando permissão no diretório $fname e novos arquivos"
 chmod --preserve-root -R 777 "$fname"
 
+echo && echo "Apagando arquivos .zip antigos"
 find "$fname" -name ""$sistema"*zip" -mtime +180 -exec rm {} \;
