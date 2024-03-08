@@ -56,15 +56,17 @@ function installunzip () {
 	        [ $? -eq 0 ] && yum install -y unzip >> /dev/null && echo "yum install -y unzip" && break
 	        which apt >> /dev/null
 	        [ $? -eq 0 ] && dnf install -y unzip >> /dev/null && echo "dnf install -y unzip" && break
+		echo && echo "Não foi possível instalar o unzip"
 		break
 	done
 }
 
+[ $# -ne 2 ] && echo "Infomar parametros: sistema versão" && exit 1
 which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
-[ $# -ne 2 ] && echo "Infomar parametros: sistema versão" && exit 1
 [ ! -d "$fname" ] && echo "Não foi encontrado diretório do sistema $sistema no Servidor" && exit 1
-
+which smbstatus >> /dev/null
+[ $? -ne 0 ] && echo "Não foi encontrado comando smbcontrol" && exit 1
 
 # ----- INÍCIO -----
 
