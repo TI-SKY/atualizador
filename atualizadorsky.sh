@@ -2,14 +2,14 @@
 # É GERADA UMA LISTA COM TODOS OS PROCESSOS RELACIONADOS A ARQUIVOS ABERTOS NO SAMBA
 # COM O grep SOMENTE É FILTRADA AS LINHAS QUE POSSUEM A STRING INFORMADA, QUE NO CASO É O NOME DO SISTEMA (ex: imoveis, financeiro, notar...)
 # O AWK FILTRA NÃO SÓ AS COLUNAS DESEJADAS, MAS TAMBÉM NÃO REPETE OS PIDS
-# COMO EXTRA É MOSTRADO NA TELA O ANDAMENTO DO PROCESSO
 #
-# EXEMPLO DE USO: ./smbcloseopenfiles.sh imoveis
+# EXEMPLO DE USO: ./smbcloseopenfiles.sh imoveis 2024.01.26.0
+# após encerrar os processoss dos arquivos abertos, é renomeada a pasta do executável
+# o zip é extraído na nova pasta, a pasta é renomeada para o padrão
+# a permissão 777 é aplicada na pasta
 #
-# PODE SER RESUMIDO A UM ÚNICO COMANDO
-# for ptokill in $(smbstatus -L|grep $sistema|awk '{print $1}'|sort|uniq); do kill -9 "$ptokill" ; done
-# onde $sistema É O NOME DO SISTEMA
-
+# Antes de iniciar os comandos são feitas diversas validações
+# No final é removido .zip mais antigos que 180 dias
 
 export sistema=$1
 export nversion=$2
@@ -61,7 +61,7 @@ function installunzip () {
 	done
 }
 
-[ $# -ne 2 ] && echo "Infomar parametros: sistema versão" && exit 1
+[ $# -ne 2 ] && echo "Infomar parametros: sistema e versão" && exit 1
 which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
 [ ! -d "$fname" ] && echo "Não foi encontrado diretório do sistema $sistema no Servidor" && exit 1
@@ -88,3 +88,4 @@ mv "$fname-" "$fname"
 closeof
 chmod --preserve-root -R 777 "$fname"
 
+find "$fname" -name ""$sistema"*zip" -mtime +180 -exec rm {} \;
