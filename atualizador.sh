@@ -61,7 +61,7 @@ which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
 [ ! -f "$fname""$namezip".zip ] && echo "Não foi encontrado o zip da nova versão $namezip.zip no Servidor" && exit 1
 which smbstatus >> /dev/null
-[ $? -ne 0 ] && echo "Não foi encontrado comando smbcontrol" && exit 1
+[ $? -ne 0 ] && echo "Não foi encontrado comando smbstatus" && exit 1
 
 # ----- INÍCIO -----
 
