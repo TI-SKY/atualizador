@@ -18,7 +18,7 @@ export sistema=$1
 export namezip=$2
 export scdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 skydir=$(cd $scdir; cd ..; pwd)
-export fname=$(dirname $(find / -wholename "$skydir*$namezip.zip" 2> /dev/null))
+export fname=$(dirname $(find / -wholename "$skydir*$namezip.zip" 2> /dev/null) 2> /dev/null)
 export daystoremove=180
 #echo scdir $scdir; echo skydir $skydir; echo fname $fname; exit
 
@@ -59,7 +59,7 @@ function installunzip () {
 [ $# -ne 2 ] && echo "Infomar parametros: sistema e nome do zip (sem extensão)" && exit 1
 which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
-[ ! -d "$fname" ] && echo "Não foi encontrado diretório do sistema $sistema no Servidor" && exit 1
+[ ! -f "$fname""$namezip".zip ] && echo "Não foi encontrado o zip da nova versão $namezip.zip no Servidor" && exit 1
 which smbstatus >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado comando smbcontrol" && exit 1
 
