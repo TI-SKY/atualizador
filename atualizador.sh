@@ -1,13 +1,16 @@
 #!/bin/bash
 # É GERADA UMA LISTA COM TODOS OS PROCESSOS RELACIONADOS A ARQUIVOS ABERTOS NO SAMBA
 # COM O grep SOMENTE É FILTRADA AS LINHAS QUE POSSUEM A STRING INFORMADA, QUE NO CASO É O NOME DO SISTEMA (ex: imoveis, financeiro, notar...)
-# O AWK FILTRA NÃO SÓ AS COLUNAS DESEJADAS, MAS TAMBÉM NÃO REPETE OS PIDS
+# O |awk|sort|uniq FILTRAM NÃO SÓ AS COLUNAS DESEJADAS, MAS TAMBÉM NÃO REPETEM OS PIDS
 #
-# EXEMPLO DE USO: ./smbcloseopenfiles.sh imoveis 2024.01.26.0
+# EXEMPLO DE USO: ./atualizador.sh "imoveis" "imoveis2024.01.26.0"
 # após encerrar os processoss dos arquivos abertos, é renomeada a pasta do executável
 # o zip é extraído na nova pasta, a pasta é renomeada para o padrão
 # a permissão 777 é aplicada na pasta
 #
+# A pasta do atulizador deverá ficar dentro do diretório sky, assim, informando o nome do zip a ser descompactado
+# o script poderá navegar considerando a pasta sky como diretório root, facilitando a identicação da pasta correta do sistema e arquivo da nova versão
+# 
 # Antes de iniciar os comandos são feitas diversas validações
 # No final é removido .zip mais antigos que 180 dias
 
@@ -16,7 +19,7 @@ export namezip=$2
 export scdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 skydir=$(cd $scdir; cd ..; pwd)
 export fname=$(dirname $(find / -wholename "$skydir*$namezip.zip" 2> /dev/null))
-
+export daystoremove=180
 #echo scdir $scdir; echo skydir $skydir; echo fname $fname; exit
 
 function closeof () {
@@ -81,4 +84,4 @@ echo && echo "Dando permissão no diretório $fname e novos arquivos"
 chmod --preserve-root -R 777 "$fname"
 
 echo && echo "Apagando arquivos .zip antigos"
-#find "$fname" -name ""$sistema"*zip" -mtime +180 -exec rm {} \;
+#find "$fname" -name ""$sistema"*zip" -mtime +$daystoremove -exec rm {} \;
