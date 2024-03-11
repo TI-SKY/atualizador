@@ -23,14 +23,23 @@ export daystoremove=180
 #echo scdir $scdir; echo skydir $skydir; echo fname $fname; exit
 
 function closeof () {
-	echo "FECHANDO PROCESSOS DE ARQUIVOS ABERTOS NO SERVIDOR"
+	echo "FECHANDO PROCESSOS DE ARQUIVOS ABERTOS NO COMPARTILHAMENTO DO SERVIDOR"
 	smbstatus -L|grep "$sistema"|awk '{$1=$2=$3=$4=$5=$6=""; print $0}'
 	
 	for ptokill in $(smbstatus -L |grep $sistema|awk '{print $1}'|sort|uniq);
 	do 
 		kill -9 $ptokill; 
 	done
-	echo && echo "PROCESSOS COM ARQUIVOS ABERTOS ENCERRADOS"
+	echo && echo "Processos com arquivos abertos no compartilhamento encerrados."
+}
+
+function closelof () {
+	echo && echo "VERIFICANDO ARQUIVOS ABERTOS LOCALMENTE EM $fname"
+	for lof in $(lsof -t +D $fname)
+	do 
+		echo && echo "Encerrando processo local de pid $lof"
+		kill -9 $lof 
+	done
 }
 
 function extnversion () {
@@ -38,7 +47,6 @@ function extnversion () {
 	cd "$fname-"
 	echo && echo "Extraindo sistema "$namezip" em $fname-"
 	unzip -o ""$namezip".zip"
-#	> zzzconcluido.txt
 	cd ..
 }
 
@@ -59,26 +67,27 @@ function installunzip () {
 [ $# -ne 2 ] && echo "Infomar parametros: sistema e nome do zip (sem extensão)" && exit 1
 which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
-[ ! -f "$fname""$namezip".zip ] && echo "Não foi encontrado o zip da nova versão $namezip.zip no Servidor" && exit 1
+[ ! -f "$fname"/"$namezip".zip ] && echo "Não foi encontrado o zip da nova versão $namezip.zip no Servidor" && exit 1
 which smbstatus >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado comando smbstatus" && exit 1
 
 # ----- INÍCIO -----
 
-
 closeof
 
+closelof
 sleep 2
+
 echo && echo "renomeando $fname para $fname-"
 mv "$fname" "$fname-"
 
-sleep 2
-
 extnversion
+
 echo && echo "Renomeando $fname- para $fname"
 mv "$fname-" "$fname"
 
 closeof
+closelof
 
 echo && echo "Dando permissão no diretório $fname e novos arquivos"
 chmod --preserve-root -R 777 "$fname"
