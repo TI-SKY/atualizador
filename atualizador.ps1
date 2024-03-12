@@ -63,15 +63,17 @@ cd $scdir
 closeof
 closeop
 
+handle64.exe -accepteula ./ >> $null
 if ( -not (handle64.exe -nobanner $fname).contains("No matching handles found")) {
     closelof
 }
 
+sleep 2
 echo "Renomeando pasta $fname para $fname-"
-mv $fname $fname-
+mv -force $fname $fname-
 extnversion
 echo "Renomeando pasta $fname- para $fname"
-mv $fname- $fname
+mv -force $fname- $fname
 
 $env:Path=$BKPPATH
 
