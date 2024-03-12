@@ -78,7 +78,7 @@ if ( -not ( .\handle64.exe -nobanner $fname ).contains("No matching handles foun
     closelof
 }
 
-echo "Aguardando confirmação de encerramento"
+echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 
 echo "Renomeando pasta $fname para $tempdir"

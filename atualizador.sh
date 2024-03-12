@@ -89,7 +89,7 @@ closeof
 
 closelof
 
-echo && echo "Aguardando confirmação..."
+echo && echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 
 echo && echo "renomeando $fname para $tempdir"
