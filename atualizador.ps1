@@ -17,12 +17,10 @@ $namezip = $(throw "-namezip parameter is required. Ex: atualizador.ps1 -sistema
 )
 $scdir = split-path -parent $MyInvocation.MyCommand.Definition
 $skydir = Split-Path -Parent $scdir
-$fname = (Get-ChildItem -Path $skydir -Filter "$namezip.zip" -Recurse).DirectoryName
-$BKPPATH=$env:Path
-$env:Path = $env:Path+";$scdir"
+$fname = (Get-ChildItem -Path "$skydir\*\$sistema" -Filter "$namezip.zip" -Recurse).DirectoryName
+$tempdir="$fname-b"
 
-#echo "scdir $scdir"; echo "sistema $sistema"; echo "namezip $namezip"; echo "skydir $skydir"; echo "fname $fname";echo "PATH $env:Path"#; exit
-
+#echo "scdir $scdir"; echo "sistema $sistema"; echo "namezip $namezip"; echo "skydir $skydir"; echo "fname $fname"#; exit
 
 function closeof {
     Write-Host Conferindo arquivos abertos no compartilhamento
@@ -43,37 +41,50 @@ function closeop {
 function closelof {
     rm -Force $scdir\handles.txt 2> $null
     foreach ( $pids in .\handle64.exe -NoBanner $fname | ForEach-Object { $_.split(":")[1] }|ForEach-Object { $_.split(" ")[1] }|Sort-Object -Unique ) {
-        handle64.exe -NoBanner -p $pids | Select-String "$sistema"|Set-Content -Path $scdir\handles.txt
-        echo "Encerrando handles de arquivos abertos no processo de pid $pids"; handle64.exe -NoBanner -p $pids | Select-String "$sistema"
+        .\handle64.exe -NoBanner -p $pids | Select-String "$sistema"|Set-Content -Path $scdir\handles.txt
+        echo "Encerrando handles de arquivos abertos no processo de pid $pids"; .\handle64.exe -NoBanner -p $pids | Select-String "$sistema"
         foreach ( $handles in Get-Content $scdir\handles.txt | ForEach-Object { $_.split(":")[0] } ) {
-            handle64.exe -nobanner -p $pids -c $handles -y >> $null            
+            .\handle64.exe -nobanner -p $pids -c $handles -y >> $null            
         }
     }
 }
 
 function extnversion {
     echo "Extraindo nova versão $namezip"
-    Expand-Archive -Verbose -Force -LiteralPath "$fname-/$namezip.zip" -DestinationPath "$fname-/"
+    Expand-Archive -Verbose -Force -LiteralPath "$tempdir/$namezip.zip" -DestinationPath "$tempdir"
 }
 
+function countdown {
+    param ( $delay )
+     
+    while ($delay -ge 0) {
+        start-sleep 1
+        echo $delay
+        $delay -= 1
+    }
+}
 
 # ----- INÍCIO -----
+
+echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip"
+
 cd $scdir
 
 closeof
 closeop
 
-handle64.exe -accepteula ./ >> $null
-if ( -not (handle64.exe -nobanner $fname).contains("No matching handles found")) {
+.\handle64.exe -accepteula ./ >> $null
+if ( -not ( .\handle64.exe -nobanner $fname ).contains("No matching handles found")) {
     closelof
 }
 
-sleep 2
-echo "Renomeando pasta $fname para $fname-"
-mv -force $fname $fname-
+echo "Aguardando confirmação de encerramento"
+countdown 10
+
+echo "Renomeando pasta $fname para $tempdir"
+mv -force "$fname" "$tempdir"
+
 extnversion
-echo "Renomeando pasta $fname- para $fname"
-mv -force $fname- $fname
 
-$env:Path=$BKPPATH
-
+echo "Renomeando pasta $tempdir para $fname"
+mv -force "$tempdir" "$fname"

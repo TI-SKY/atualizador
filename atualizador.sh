@@ -19,6 +19,7 @@ export namezip=$2
 export scdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 skydir=$(cd $scdir; cd ..; pwd)
 export fname=$(dirname $(find / -wholename "$skydir*$namezip.zip" 2> /dev/null) 2> /dev/null)
+export tempdir="$fname-b"
 export daystoremove=180
 #echo scdir $scdir; echo skydir $skydir; echo fname $fname; exit
 
@@ -43,9 +44,9 @@ function closelof () {
 }
 
 function extnversion () {
-	[ ! -f ""$fname"-/"$namezip".zip" ] && echo "Arquivo zip com nova versão não encontrado" && exit 1
-	cd "$fname-"
-	echo && echo "Extraindo sistema "$namezip" em $fname-"
+	[ ! -f ""$tempdir"/"$namezip".zip" ] && echo "Arquivo zip com nova versão não encontrado" && exit 1
+	cd "$tempdir"
+	echo && echo "Extraindo sistema "$namezip" em $tempdir"
 	unzip -o ""$namezip".zip"
 	cd ..
 }
@@ -64,6 +65,16 @@ function installunzip () {
 	done
 }
 
+function countdown () {
+	delay=$1
+	while [ $delay -ge 0 ]
+	do
+		echo $delay
+		sleep 1
+		((delay--))
+	done
+}
+
 [ $# -ne 2 ] && echo "Infomar parametros: sistema e nome do zip (sem extensão)" && exit 1
 which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
@@ -72,19 +83,22 @@ which smbstatus >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado comando smbstatus" && exit 1
 
 # ----- INÍCIO -----
+echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip"
 
 closeof
 
 closelof
-sleep 2
 
-echo && echo "renomeando $fname para $fname-"
-mv "$fname" "$fname-"
+echo && echo "Aguardando confirmação..."
+countdown 10
+
+echo && echo "renomeando $fname para $tempdir"
+mv "$fname" "$tempdir"
 
 extnversion
 
-echo && echo "Renomeando $fname- para $fname"
-mv "$fname-" "$fname"
+echo && echo "Renomeando $tempdir para $fname"
+mv "$tempdir" "$fname"
 
 closeof
 closelof
