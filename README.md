@@ -23,6 +23,8 @@ Em conjunto, esperasse a possibilidade de um programa atualizador que rodaria nu
 
 ## FUNCIONAMENTO
 
+[Vídeo Exemplo](https://youtu.be/mk_MFdyLzjk)
+
 Ambos scripts operam pela mesma lógica.
 
 Antes de iniciar são realizados alguns testes para verificar se é possível continuar rodando o script, ou não.
@@ -66,3 +68,11 @@ No linux, como root. No windows, com um usuário (e terminal) abertos por um adm
 É extremamente importante que todos os sistemas sejam encerrados nas estações.
 Embora os scripts tentam forçadamente encerrar todos os vículos com arquivos abertos e processos locais, o sistema em uso ainda poderia dificultar a liberação dos arquivos e pastas.
 E mesmo liberando o vínculo com todos os arquivos, caso o sistema permaneça em execução na estação, a versão antiga pode ficar presa no cache do windows, sendo necessário reiniciá-la.
+
+Permissão de execução de scripts no pwsh:
+```
+Get-ExecutionPolicy
+```
+```
+Set-ExecutionPolicy Unrestricted
+```
