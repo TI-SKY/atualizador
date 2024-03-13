@@ -14,12 +14,12 @@ Em conjunto, esperasse a possibilidade de um programa atualizador que rodaria nu
 
 ## LINUX
 
-	- /sky/atualizador/atualizador.sh
+- /sky/atualizador/atualizador.sh
 
 ## WINDOWS
 
-	- C:\sky\atualizador\atualizador.ps1
-	- C:\sky\atualizador\handle64.exe
+- C:\sky\atualizador\atualizador.ps1
+- C:\sky\atualizador\handle64.exe
 
 ## FUNCIONAMENTO
 
@@ -50,11 +50,11 @@ O zip da nova versão deve estar dentro da pasta do sistema.
 
 ```
 C:\sky\atualizador\atualizador.ps1 -sistema sistema -namezip sistema2024.01.01.0
-```cmd
+```
 
 ```
 /sky/atualizador/atualizador.sh sistema sistema2024.01.01.0
-```cmd
+```
 
 Os scripts devem ser invocados com privilégios de administrador.
 No linux, como root. No windows, com um usuário (e terminal) abertos por um admin.
