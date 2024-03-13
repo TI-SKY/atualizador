@@ -44,7 +44,7 @@ function closelof {
         .\handle64.exe -NoBanner -p $pids | Select-String "$sistema"|Set-Content -Path $scdir\handles.txt
         echo "Encerrando handles de arquivos abertos no processo de pid $pids"; .\handle64.exe -NoBanner -p $pids | Select-String "$sistema"
         foreach ( $handles in Get-Content $scdir\handles.txt | ForEach-Object { $_.split(":")[0] } ) {
-            .\handle64.exe -nobanner -p $pids -c $handles -y >> $null            
+            .\handle64.exe -nobanner -p $pids -c $handles -y 2>> $null            
         }
     }
 }
@@ -68,11 +68,11 @@ function countdown {
 # --------------------------------------------------------------------------------
 
 #VERIFICANDO SE ESTÁ RODANDO COMO ADMIN
-$isadmin=$currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-if ( $isadmin -ne "True") {
-    Get-Date
-    echo -n "Atualização NÃO está rodando com privilégios administrativos no SERVIDOR, processo cancelado"
-    exit    
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+if (-not ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)))
+{
+    echo "Atualização NÃO está rodando com privilégios administrativos no SERVIDOR, processo cancelado."
+    Exit 1
 }
 
 #VERIFICANDO SE O DIRETÓRIO DE EXECUTÁVEL ENCONTRADO NA VAR EXISTE
