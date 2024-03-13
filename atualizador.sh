@@ -74,16 +74,20 @@ function countdown () {
 		((delay--))
 	done
 }
-
-[ $# -ne 2 ] && echo "Infomar parametros: sistema e nome do zip (sem extensão)" && exit 1
+# --------------------------------------------------------------------------------
+# ---------- TESTES ----------
+# --------------------------------------------------------------------------------
+[ "$EUID" -ne 0 ] && echo "Please run as root" && exit
+[ $# -ne 2 ] && echo "Infomar parametros: sistema e nome do zip (sem extensão)" && echo "./atualizador.sh sistema sistema2024.01.01" && exit 1
 which unzip >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado unzip, aplicação será instalada" && installunzip
 [ ! -f "$fname"/"$namezip".zip ] && echo "Não foi encontrado o zip da nova versão $namezip.zip no Servidor" && exit 1
 which smbstatus >> /dev/null
 [ $? -ne 0 ] && echo "Não foi encontrado comando smbstatus" && exit 1
-
-# ----- INÍCIO -----
-echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip"
+# --------------------------------------------------------------------------------
+# ---------- INÍCIO ----------
+# --------------------------------------------------------------------------------
+echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip em $(date)"
 
 closeof
 
@@ -108,3 +112,4 @@ chmod --preserve-root -R 777 "$fname"
 
 echo && echo "Apagando arquivos .zip antigos"
 #find "$fname" -name ""$sistema"*zip" -mtime +$daystoremove -exec rm {} \;
+echo "Processo finalizado em $(date)"

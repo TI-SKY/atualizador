@@ -12,8 +12,8 @@
 #
 
 param (
-$sistema = $(throw "-sistema parameter is required. Ex: atualizador.ps1 -sistema imoveis -namezip imoveis2024.01.26.0"),
-$namezip = $(throw "-namezip parameter is required. Ex: atualizador.ps1 -sistema imoveis -namezip imoveis2024.01.26.0")
+$sistema = $(throw "-sistema parâmetro é obrigatório. Ex: atualizador.ps1 -sistema imoveis -namezip imoveis2024.01.26.0"),
+$namezip = $(throw "-namezip parâmetro é obrigatórioge. Ex: atualizador.ps1 -sistema imoveis -namezip imoveis2024.01.26.0")
 )
 $scdir = split-path -parent $MyInvocation.MyCommand.Definition
 $skydir = Split-Path -Parent $scdir
@@ -63,11 +63,30 @@ function countdown {
         $delay -= 1
     }
 }
+# --------------------------------------------------------------------------------
+# ---------- TESTES ----------
+# --------------------------------------------------------------------------------
 
-# ----- INÍCIO -----
+#VERIFICANDO SE ESTÁ RODANDO COMO ADMIN
+$isadmin=$currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if ( $isadmin -ne "True") {
+    Get-Date
+    echo -n "Atualização NÃO está rodando com privilégios administrativos no SERVIDOR, processo cancelado"
+    exit    
+}
 
-echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip"
+#VERIFICANDO SE O DIRETÓRIO DE EXECUTÁVEL ENCONTRADO NA VAR EXISTE
+if ( $null -eq $fname ) {
+    echo "Não foi encontrado um diretório para o sistema: $sistema"
+    exit
+} 
 
+# --------------------------------------------------------------------------------
+# ---------- INÍCIO ----------
+# --------------------------------------------------------------------------------
+echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip em"
+Get-Date
+echo ""; echo "Pasta de executáveis do $sistema do servidor é $fname"
 cd $scdir
 
 closeof
@@ -88,3 +107,6 @@ extnversion
 
 echo "Renomeando pasta $tempdir para $fname"
 mv -force "$tempdir" "$fname"
+
+echo "Processo finalizado em"
+Get-Date
