@@ -2,8 +2,8 @@
 Scripts para automatizar atualizações dos sistemas sky
 
 
-Os arquivos atualizador.ps1 e atualizador.sh devem ser salvos dentro do diretório `atualizador` sky do servidor de arquivos.
-Não importa a estrutura de diretórios até chegar na pasta sky (/sky, /home/sky, /dados/sky, D:\sky\, F:\sky), ele deve ficar no mesmo diretório da executaveis, NÃO dentro dele.
+Os arquivos atualizador.ps1 e atualizador.sh devem ser salvos dentro do diretório `atualizador`, colocado no diretório sky do servidor de arquivos.
+Não importa a estrutura de diretórios até chegar na pasta sky (/sky, /home/sky, /dados/sky, D:\sky\, F:\sky), o diretório `atualizador` deve ficar no mesmo diretório da executaveis, NÃO dentro dele.
 Principal atenção quando o servidor de executaveis for diferente do de dados.
 Não deve-se colocar os scripts dentro da executaveis, pois ela está na rede e deixaria disponíveis scripts que devem rodar como admin.
 Para Servidores windows o arquivo handle64.exe deve ser copiado junto.
@@ -64,5 +64,5 @@ No linux, como root. No windows, com um usuário (e terminal) abertos por um adm
 
 
 É extremamente importante que todos os sistemas sejam encerrados nas estações.
-Embora os scripts tentam forçadamente encerrar todos os vículos com arquivos abertos e processos locais, o sistema em uso ainda poderia dificultar o liberamento dos arquivos.
+Embora os scripts tentam forçadamente encerrar todos os vículos com arquivos abertos e processos locais, o sistema em uso ainda poderia dificultar a liberação dos arquivos e pastas.
 E mesmo liberando o vínculo com todos os arquivos, caso o sistema permaneça em execução na estação, a versão antiga pode ficar presa no cache do windows, sendo necessário reiniciá-la.
