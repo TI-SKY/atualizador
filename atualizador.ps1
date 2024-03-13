@@ -39,8 +39,9 @@ function closeop {
 }
 
 function closelof {
+     param ( $ftarget )
     rm -Force $scdir\handles.txt 2> $null
-    foreach ( $pids in .\handle64.exe -NoBanner $fname | ForEach-Object { $_.split(":")[1] }|ForEach-Object { $_.split(" ")[1] }|Sort-Object -Unique ) {
+    foreach ( $pids in .\handle64.exe -NoBanner $ftarget | ForEach-Object { $_.split(":")[1] }|ForEach-Object { $_.split(" ")[1] }|Sort-Object -Unique ) {
         .\handle64.exe -NoBanner -p $pids | Select-String "$sistema"|Set-Content -Path $scdir\handles.txt
         echo "Encerrando handles de arquivos abertos no processo de pid $pids"; .\handle64.exe -NoBanner -p $pids | Select-String "$sistema"
         foreach ( $handles in Get-Content $scdir\handles.txt | ForEach-Object { $_.split(":")[0] } ) {
@@ -59,7 +60,7 @@ function countdown {
      
     while ($delay -ge 0) {
         start-sleep 1
-        echo $delay
+        Write-Host -NoNewline "$delay "
         $delay -= 1
     }
 }
@@ -91,10 +92,9 @@ cd $scdir
 
 closeof
 closeop
-
 .\handle64.exe -accepteula ./ >> $null
 if ( -not ( .\handle64.exe -nobanner $fname ).contains("No matching handles found")) {
-    closelof
+    closelof $fname
 }
 
 echo "Aguardando confirmação do sistema operacional do servidor..."
@@ -104,6 +104,15 @@ echo "Renomeando pasta $fname para $tempdir"
 mv -force "$fname" "$tempdir"
 
 extnversion
+
+echo "Aguardando confirmação do sistema operacional do servidor..."
+countdown 10
+
+closeof
+closeop
+if ( -not ( .\handle64.exe -nobanner $tempdir ).contains("No matching handles found")) {
+    closelof $tempdir
+}
 
 echo "Renomeando pasta $tempdir para $fname"
 mv -force "$tempdir" "$fname"
