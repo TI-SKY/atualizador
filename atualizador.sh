@@ -68,6 +68,7 @@ function installunzip () {
 
 function countdown () {
 	delay=$1
+	echo && echo "Aguardando confirmação do sistema operacional do servidor..."
 	while [ $delay -ge 0 ]
 	do
 		echo -n "$delay "
@@ -92,7 +93,6 @@ echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip em $(dat
 
 closeof
 closelof "$fname"
-echo && echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 
 echo && echo "renomeando $fname para $tempdir"
@@ -100,7 +100,6 @@ mv "$fname" "$tempdir"
 
 extnversion
 
-echo && echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 closeof
 closelof "$tempdir"

@@ -57,7 +57,7 @@ function extnversion {
 
 function countdown {
     param ( $delay )
-     
+    echo "Aguardando confirmação do sistema operacional do servidor..." 
     while ($delay -ge 0) {
         start-sleep 1
         Write-Host -NoNewline "$delay "
@@ -97,7 +97,6 @@ if ( -not ( .\handle64.exe -nobanner $fname ).contains("No matching handles foun
     closelof $fname
 }
 
-echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 
 echo "Renomeando pasta $fname para $tempdir"
@@ -105,13 +104,15 @@ mv -force "$fname" "$tempdir"
 
 extnversion
 
-echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 
 closeof
 closeop
 if ( -not ( .\handle64.exe -nobanner $tempdir ).contains("No matching handles found")) {
+    countdown 10
+    if ( -not ( .\handle64.exe -nobanner $tempdir ).contains("No matching handles found")) {    
     closelof $tempdir
+    }
 }
 
 echo "Renomeando pasta $tempdir para $fname"
