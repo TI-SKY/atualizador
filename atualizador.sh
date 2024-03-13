@@ -35,8 +35,9 @@ function closeof () {
 }
 
 function closelof () {
-	echo && echo "VERIFICANDO ARQUIVOS ABERTOS LOCALMENTE EM $fname"
-	for lof in $(lsof -t +D $fname)
+	ftarget=$1
+	echo && echo "VERIFICANDO ARQUIVOS ABERTOS LOCALMENTE EM $ftarget"
+	for lof in $(lsof -t +D $ftarget)
 	do 
 		echo && echo "Encerrando processo local de pid $lof"
 		kill -9 $lof 
@@ -69,7 +70,7 @@ function countdown () {
 	delay=$1
 	while [ $delay -ge 0 ]
 	do
-		echo $delay
+		echo -n "$delay "
 		sleep 1
 		((delay--))
 	done
@@ -90,9 +91,7 @@ which smbstatus >> /dev/null
 echo "INICIANDO ATUALIZAÇÃO DO SISTEMA $sistema PARA VERSÃO $namezip em $(date)"
 
 closeof
-
-closelof
-
+closelof "$fname"
 echo && echo "Aguardando confirmação do sistema operacional do servidor..."
 countdown 10
 
@@ -101,11 +100,13 @@ mv "$fname" "$tempdir"
 
 extnversion
 
+echo && echo "Aguardando confirmação do sistema operacional do servidor..."
+countdown 10
+closeof
+closelof "$tempdir"
+
 echo && echo "Renomeando $tempdir para $fname"
 mv "$tempdir" "$fname"
-
-closeof
-closelof
 
 echo && echo "Dando permissão no diretório $fname e novos arquivos"
 chmod --preserve-root -R 777 "$fname"
