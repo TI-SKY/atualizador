@@ -25,7 +25,7 @@ $tempdir="$fname-b"
 function closeof {
     Write-Host Conferindo arquivos abertos no compartilhamento
     foreach ($openfile in Get-SmbOpenFile |Where-Object ShareRelativePath -like "*$sistema*"|Select-Object FileId,Path) {
-        Write-Host Ecerrando $openfile.Path
+        Write-Host Encerrando $openfile.Path
         Close-SmbOpenFile -Force $openfile.FileId
         }
 }
@@ -33,7 +33,7 @@ function closeof {
 function closeop {
     Write-Host Conferindo processos locais abertos...
     foreach ($openprocess in Get-Process |Where-Object ProcessName -Like "$sistema*"|Select-Object Id,ProcessName) {
-        Write-Host Ecerrando $openprocess.ProcessName
+        Write-Host Encerrando $openprocess.ProcessName
         Stop-Process -Force -Id $openprocess.Id
         }
 }
