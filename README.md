@@ -45,7 +45,9 @@ No linux, ao final é usado o comando `chmod` para dar permissão aos novos arqu
 ## REQUISITOS
 
 O script deve ser executado NO SERVIDOR.
+
 Os scripts devem ser salvos dentro da pasta atualizador, no mesmo diretorio da executaveis, mas não dentro dela.
+
 É preciso passar como parâmetros o nome do sistema e o nome do zip com nova versão (sem o .zip).
 O zip da nova versão deve estar dentro da pasta do sistema.
 
