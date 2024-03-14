@@ -63,11 +63,11 @@ function countdown {
         Write-Host -NoNewline "$delay "
         $delay -= 1
     }
+    echo ""
 }
 # --------------------------------------------------------------------------------
 # ---------- TESTES ----------
 # --------------------------------------------------------------------------------
-
 #VERIFICANDO SE ESTÁ RODANDO COMO ADMIN
 $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 if (-not ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)))
@@ -75,13 +75,11 @@ if (-not ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Ad
     echo "Atualização NÃO está rodando com privilégios administrativos no SERVIDOR, processo cancelado."
     Exit 1
 }
-
 #VERIFICANDO SE O DIRETÓRIO DE EXECUTÁVEL ENCONTRADO NA VAR EXISTE
 if ( $null -eq $fname ) {
     echo "Não foi encontrado um diretório para o sistema: $sistema"
     exit
 } 
-
 # --------------------------------------------------------------------------------
 # ---------- INÍCIO ----------
 # --------------------------------------------------------------------------------
