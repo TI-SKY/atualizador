@@ -24,6 +24,7 @@ Em conjunto, esperasse a possibilidade de um programa atualizador que rodaria nu
 ## FUNCIONAMENTO
 
 [Vídeo Exemplo](https://youtu.be/mk_MFdyLzjk)
+
 [Vídeo Motivo de Renomear a pasta](https://www.youtube.com/watch?v=wZx5eQQIJO8)
 
 Ambos scripts operam pela mesma lógica.
